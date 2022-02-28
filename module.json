@@ -4,9 +4,16 @@
 	"description": "A mail client module.",
     "connectedApp":"default",
 	"files": [],
+    "links":[{
+        "href":"/mail",
+        "label": "Send Mail",
+        "isSublink": true,
+        "adminLink": true,
+        "parentLinkId":"car"
+    }],
 	"routes": {
         "mail":{
-            "callback":"mailHome",
+            "callback":"compose",
             "content-type":"text/html"
         },
         "mail/show/form":{

@@ -13,72 +13,50 @@ class MailModule extends Module {
     }
 
 
-    public function mailHome() {
 
-        $tpl = new Template("email");
-        $tpl->addPath("/content/themes/default");
+	public function compose() {
 
-        $home = new Template("home");
-        $home->addPath(__DIR__ . "/templates");
-        $home = $home->render([
-            "options"   =>  $this->getMailTypeOptions()
-        ]);
-
-
-        return $tpl->render([
-            "title" => "Send Email",
-            "content" => $home
-        ]);
-    }
-
-
-    public function showFormForType() {
-
-        $today = new DateTime();
+		$today = new DateTime();
 		$pickerDate = $today->format("Y-m-d");
 		$emailDate = $today->format("M d, Y");
 
-        $primaryTpl = new Template("email");
-        $primaryTpl->addPath("/content/themes/default");
+		$form = new Template("email-form");
+		$form->addPath(__DIR__ . "/templates");
 
-        $option = $this->getRequest()->getBody()->option;
-        
-        $subTemplate = new Template($option);
-        $subTemplate->addPath(__DIR__ . "/templates");
-
-        $params = [
-			"defaultEmail"      => get_current_user()->getEmail(),
-			"emailDate"	        =>  $emailDate,
+		$params = [
+			"defaultEmail"		=> get_current_user()->getEmail(),
+			"defaultSubject"	=> "Appellate Review - COA, $emailDate",
 			"defaultPickerDate" => $pickerDate
 		];
 
-        $subTemplate = $subTemplate->render($params);
-
-
-        return $primaryTpl->render([
-            "content" => $subTemplate
-        ]);
-    }
-
-
-    public function newMail() {
-
-		$params = $this->getRequest()->getBody();
-
-        $html = $this->getEmailBody($params->emailType);
-
-        var_dump($html);exit;
-		
-
-		return $this->sendMail($params->to, $params->subject, $html);
+		return $form->render($params);
 	}
 
 
-    public function sendMail($to, $subject, $content, $headers = array()){
+
+
+
+    // Use composer.json;
+    // email: ["className1","className2"] for a list of 
+    // classes to instantiate that can implement getTemplates()
+    public function showTemplates() {
+
+        return array(
+            "templateName",
+            "CAR Notifications" => "/car/mail/create",
+            "CAR Notifications" => "/mail/car/notifications",
+            "BON Notification 1" => "/mail/bon/notification-1",
+            "BON Notification 2" => "/mail/bon/notification-2"
+        );
+    }
+
+
+	public function doMail($to, $subject, $content, $headers = array()){
 
 		$headers = [
 			"From" 		   => "notifications@ocdla.org",
-			"Content-Type" => "text/html"
+			"Content-Type" => "text/html",
+            "Bcc"           => "jbernal.web.dev@gmail.com"
 		];
 
 		$headers = HttpHeaderCollection::fromArray($headers);
@@ -95,44 +73,21 @@ class MailModule extends Module {
 
 
 
-    public function getEmailBody($type) {
-
-        switch($type){
-            case "appellate":
-                return $this->getAppellateEmailBody();
-                break;
-        }
-    }
+	public function testMail() {
 
 
-    public function getAppellateEmailBody(){
+		$to = "redderx@yahoo.com";
+		$subject = "Books Online notifications";
 
-        $params = $this->getRequest()->getBody();
-        var_dump($params);exit;
 
-		$startDate = new DateTime($params->startDate);
-		$endDate = new DateTime($params->endDate);
+		$range = new DateTime("2022-1-10");
+		$end = new DateTime();
+		$content = "My sample content.";
+		
 
-        $http = Http::newSession();
-        $req = new HttpRequest("http://appserver/car/get/recent/external");
-        $resp = $http->send($req);
-
-        $cars = json_decode($resp->getBody());
-
-        var_dump($cars);exit;
-
-        
-    }
+		return $this->doMail($to, $subject, $content);
+	}
 
 
 
-    public function getMailTypeOptions() {
-
-        return [
-            ""  => "None Selected",
-            "appellate" => "Appellate Review",
-            "random"  => "Random Email",
-            "other"  => "Some Other Email"
-        ];
-    }
 }
