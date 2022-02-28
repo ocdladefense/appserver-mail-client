@@ -1,12 +1,20 @@
 {
-	"comment": "This is a module template",
-	"name": "module-template", 
-	"description": "A module for building other modules.",
+	"comment": "A mail client module.",
+	"name": "mail", 
+	"description": "A mail client module.",
     "connectedApp":"default",
 	"files": [],
 	"routes": {
-        "example/route":{
-            "callback":"callbackName",
+        "mail":{
+            "callback":"mailHome",
+            "content-type":"text/html"
+        },
+        "mail/show/form":{
+            "callback":"showFormForType",
+            "content-type":"text/html"
+        },
+        "mail/send":{
+            "callback":"newMail",
             "content-type":"text/html"
         }
     }
