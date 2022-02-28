@@ -1,6 +1,6 @@
 {
-    "name": "ocdladefense/project",
-    "description": "",
+    "name": "ocdladefense/appserver-mail-client",
+    "description": "A simple mail client.",
     "type": "wordpress-theme",
     "license": "MIT",
     "authors": [],
