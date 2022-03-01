@@ -6,6 +6,11 @@
         margin-bottom: 15px;
     }
 </style>
+
+<script type="application/javascript" src="/modules/mail/assets/js/general.js">
+</script>
+
+
 <div class="container email-container">
 
     <form action="/mail/send" method="post">
@@ -15,7 +20,7 @@
 
         <div class="form-group">
             <label>Template:</label>
-            <select class="form-control" name="template">
+            <select id="template" class="form-control" name="template">
                 <option value="car-notification">CAR Notification</option>
                 <option value="bon-expiration-1">Books Online Expiration - First Notice</option>
                 <option value="bon-expiration-2">Books Online Expiration - Second Notice</option>
@@ -34,6 +39,10 @@
         <div class="form-group">
             <label>Email Subject</label>
             <input type="text" class="form-control" name="subject" value="" placeholder="Enter email subject line..." />
+        </div>
+
+        <div id="custom-fields">
+
         </div>
 
         <div class="form-group">

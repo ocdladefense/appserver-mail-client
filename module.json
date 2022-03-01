@@ -23,6 +23,10 @@
             "content-type":"text/html",
             "authorization":"webserver",
             "access": "is_authenticated"
+        },
+        "mail/compose/custom-fields/%s": {
+            "callback": "getCustomMailFields",
+            "content-type":"text/partial+html"
         }
     }
 }

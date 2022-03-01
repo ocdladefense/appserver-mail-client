@@ -37,11 +37,32 @@ class MailModule extends Module {
 	}
 
 
+/**
+ * 
+ * let fetch("/mail/compose/custom-fields/car").then((}))
+ */
+
+	public function getCustomMailFields($mailExtension = "car") {
+		// Lookup the extension;
+		// For now let's code a specific algorithm.
+
+		$form = new Template("email-custom-fields");
+		$form->addPath(path_to_modules() . "/car/templates");
+
+
+
+
+		return $form->render();
+	}
+
+
+
+
 	public function sendMail() {
 
 		$user = get_current_user();
 		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
-		
+
 		$params = $this->getRequest()->getBody();
 
 		$content = $params->body;
@@ -112,5 +133,14 @@ class MailModule extends Module {
 	}
 
 
+	public function getScripts() {
+
+		
+	}
+
+	public function getStyles() {
+
+
+	}
 
 }
