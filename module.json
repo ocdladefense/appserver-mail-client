@@ -14,15 +14,15 @@
 	"routes": {
         "mail":{
             "callback":"compose",
-            "content-type":"text/html"
-        },
-        "mail/show/form":{
-            "callback":"showFormForType",
-            "content-type":"text/html"
+            "content-type":"text/html",
+            "authorization":"webserver",
+            "access": "is_admin"
         },
         "mail/send":{
-            "callback":"newMail",
-            "content-type":"text/html"
+            "callback": "sendMail",
+            "content-type":"text/html",
+            "authorization":"webserver",
+            "access": "is_admin"
         }
     }
 }

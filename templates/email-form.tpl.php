@@ -8,7 +8,7 @@
 </style>
 <div class="container email-container">
 
-    <form action="/car/mail/send" method="post">
+    <form action="/mail/send" method="post">
 
         <h1>Compose Email(s)</h1>
 

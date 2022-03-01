@@ -16,6 +16,10 @@ class MailModule extends Module {
 
 	public function compose() {
 
+		$user = get_current_user();
+		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
+
+
 		$today = new DateTime();
 		$pickerDate = $today->format("Y-m-d");
 		$emailDate = $today->format("M d, Y");
@@ -30,6 +34,24 @@ class MailModule extends Module {
 		];
 
 		return $form->render($params);
+	}
+
+
+	public function sendMail() {
+
+		$user = get_current_user();
+		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
+		
+		$params = $this->getRequest()->getBody();
+
+		$content = $params->body;
+
+
+
+		$to = "jbernal.web.dev@gmail.com";// + trevro
+		$subject = "Books Online notifications";
+
+		return $this->doMail($to, $subject, $subject, $content);
 	}
 
 
@@ -51,7 +73,7 @@ class MailModule extends Module {
     }
 
 
-	public function doMail($to, $subject, $content, $headers = array()){
+	public function doMail($to, $subject, $title, $content, $headers = array()){
 
 		$headers = [
 			"From" 		   => "notifications@ocdla.org",
@@ -67,6 +89,7 @@ class MailModule extends Module {
 		$message->setSubject($subject);
 		$message->setBody($content);
 		$message->setHeaders($headers);
+		$message->setTitle($title);
 
 		return $message;
 	}
@@ -85,7 +108,7 @@ class MailModule extends Module {
 		$content = "My sample content.";
 		
 
-		return $this->doMail($to, $subject, $content);
+		return $this->doMail($to, $subject, "SAMPLE EMAIL", $content);
 	}
 
 
