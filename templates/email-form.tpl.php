@@ -21,6 +21,7 @@
         <div class="form-group">
             <label>Template:</label>
             <select id="template" class="form-control" name="template">
+                <option value="standard">Standard Email</option>
                 <option value="car-notification">CAR Notification</option>
                 <option value="bon-expiration-1">Books Online Expiration - First Notice</option>
                 <option value="bon-expiration-2">Books Online Expiration - Second Notice</option>
@@ -30,7 +31,7 @@
 
         <div class="form-group">
             <label>To:</label>
-            <input required id="to" type="email" class="form-control" name="to" value="<?php print $defaultEmail; ?>" aria-describedby="emailHelp" placeholder="To..." />
+            <input required id="to" type="email" class="form-control" name="to" value="<?php print $defaultFrom; ?>" aria-describedby="emailHelp" placeholder="To..." />
         </div>
         <div class="form-group">
             <label>From:</label>

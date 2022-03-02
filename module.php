@@ -28,9 +28,7 @@ class MailModule extends Module {
 		$form->addPath(__DIR__ . "/templates");
 
 		$params = [
-			"defaultEmail"		=> get_current_user()->getEmail(),
-			"defaultSubject"	=> "Appellate Review - COA, $emailDate",
-			"defaultPickerDate" => $pickerDate
+			"defaultFrom" => get_current_user()->getEmail()
 		];
 
 		return $form->render($params);
@@ -43,17 +41,21 @@ class MailModule extends Module {
  */
 
 	public function getCustomMailFields($mailExtension = "car") {
+
+		if($mailExtension == "standard") return "";
+
+		$moduleName = explode("-", $mailExtension)[0];
+
 		// Lookup the extension;
 		// For now let's code a specific algorithm.
 
 		$form = new Template("email-custom-fields");
-		$form->addPath(path_to_modules() . "/car/templates");
-
-
-
+		$form->addPath(path_to_modules() . "/$moduleName/templates");
 
 		return $form->render();
 	}
+
+
 
 
 

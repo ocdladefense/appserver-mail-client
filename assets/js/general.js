@@ -5,12 +5,12 @@
 
 domReady(function() {
 
-
     let tnode = document.getElementById("template");
     tnode.addEventListener("change", updateForm);
 });
 
- function getCompositionCustomFields(moduleName) {
+
+function getCompositionCustomFields(moduleName) {
     return fetch("/mail/compose/custom-fields/"+moduleName)
     .then(function(resp) {
         return resp.text();
@@ -21,14 +21,15 @@ domReady(function() {
 
 function updateForm(e) {
     let target = e.target;
-    console.log(target);
-    let moduleName = "car";//moduleName || "car";
+    
+    let emailType = target.value; // "car";//moduleName || "car";
 
 
-    let req = getCompositionCustomFields(moduleName);
+    let req = getCompositionCustomFields(emailType);
 
     req.then(function(html) {  
         let cfnode = document.getElementById("custom-fields");
         cfnode.innerHTML = html;
     });
 }
+
