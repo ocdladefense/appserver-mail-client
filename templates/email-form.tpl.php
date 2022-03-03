@@ -44,6 +44,11 @@
                     <input type="text" class="form-control" name="subject" value="" placeholder="Enter email subject line..." />
                 </div>
 
+                <div id="body-container" class="form-group">
+                    <label>Email Body</label>
+                    <textarea id="email-body" class="form-control" name="body" value="" placeholder="Type message here...">&nbsp;</textarea>
+                </div>
+
                 <div id="custom-fields">
 
                 </div>
@@ -55,10 +60,6 @@
                 <div id="preview-container" class="form-group scroll email-body preview hidden">
                 </div>
 
-                <div id="body-container" class="form-group">
-                    <label>Email Body</label>
-                    <textarea id="email-body" class="form-control email-body" name="body" value="" placeholder="Type message here...">&nbsp;</textarea>
-                </div>
             </div>
 
         </div>
