@@ -84,7 +84,22 @@ class MailModule extends Module {
 
 		$message = new $messageClass();
 
-		return $message->getHtml($params);
+		$template = new Template("email");
+		$template->addPath(get_theme_path());
+
+		$params = new stdClass();
+		$params->court = "Oregon Appellate Court";
+		$params->startDate = "2022-01-01";
+		$params->endDate = "2022-03-02";
+
+		$html = "<h3>Preview:</h3>";
+
+		$html .= $template->render(array(
+			"content" => $message->getHtml($params),
+			"title" => $message->getTitle()
+		));
+
+		return $html;
 	}
 
 

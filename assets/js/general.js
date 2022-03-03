@@ -8,7 +8,6 @@ domReady(function() {
 
     let tnode = document.getElementById("template");
     tnode.addEventListener("change", updateForm);
-
 });
 
 
@@ -42,12 +41,22 @@ function updateForm(e) {
         cfnode.innerHTML = html;
     });
 
-    let req2 = getPreview(emailType);
 
+
+    // Showing the preview...or text area.
+
+    let previewContainer = document.getElementById("preview-container");
+    let bodyContainer = document.getElementById("body-container");
+
+    console.log(previewContainer, bodyContainer);
+
+    bodyContainer.classList.toggle("hidden");
+    previewContainer.classList.toggle("hidden");
+
+    let req2 = getPreview(emailType);
     req2.then(function(html) {  
-        let emailBodyNode = document.getElementById("email-body");
-        console.log(emailBodyNode);
-        emailBodyNode.innerHTML = html;
+
+        previewContainer.innerHTML = html;
     });
 }
 

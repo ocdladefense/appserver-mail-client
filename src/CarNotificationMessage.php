@@ -11,7 +11,6 @@ class CarNotificationMessage extends MailMessage{
     
 	public function getHtml($params) {
 
-
 		return $this->getRecentCarList($params->court, $startDate, $endDate);
 	}
 
