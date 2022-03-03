@@ -19,11 +19,6 @@
             <div class="col-md-4">
                 <h1>Compose Email(s)</h1>
 
-                <div class="form-group">
-                    <label>Show Preview</label>
-                    <input id="show-preview" name="showPreview" type="checkbox" checked=true value=1 />
-                </div>
-
 
                 <div class="form-group">
                     <label>Template:</label>
@@ -58,9 +53,15 @@
             <div class="col-md-6">
 
                 <div class="form-group email-preview">
+                    <div id="email-body" class="preview-container"></div>
+                </div>
+                
+                <!-- <div contenteditable="true" id="editable" class="editable"></div>
+
+                <div class="form-group email-preview">
                     <label>Email Body</label>
                     <textarea id="email-body" class="form-control" name="body" value="" placeholder="Type message here...">&nbsp;</textarea>
-                </div>
+                </div> -->
             </div>
 
         </div>

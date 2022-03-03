@@ -8,6 +8,7 @@ domReady(function() {
 
     let tnode = document.getElementById("template");
     tnode.addEventListener("change", updateForm);
+
 });
 
 
@@ -45,7 +46,8 @@ function updateForm(e) {
 
     req2.then(function(html) {  
         let emailBodyNode = document.getElementById("email-body");
-        emailBodyNode.value = html;
+        console.log(emailBodyNode);
+        emailBodyNode.innerHTML = html;
     });
 }
 

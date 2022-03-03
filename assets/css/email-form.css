@@ -17,7 +17,16 @@
         display: inline;
         max-width: 30%;
     }
-    textarea#email-body {
+
+    .preview-container{
+        
+        background-color: white;
+        min-height: 400px;
+        padding: 10px;
+        margin-top:10px;
+    }
+
+    textarea#email-body, .editable {
         min-height: 500px;
     }
 }
