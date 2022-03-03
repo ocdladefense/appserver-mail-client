@@ -3,7 +3,7 @@
 	"name": "mail", 
 	"description": "A mail client module.",
     "connectedApp":"default",
-	"files": [],
+	"files": ["CarNotificationMessage.php"],
     "links":[{
         "href":"/mail",
         "label": "Send Mail",
@@ -26,6 +26,10 @@
         },
         "mail/compose/custom-fields/%s": {
             "callback": "getCustomMailFields",
+            "content-type":"text/partial+html"
+        },
+        "mail/car/preview": {
+            "callback": "getPreview",
             "content-type":"text/partial+html"
         }
     }

@@ -17,6 +17,11 @@
 
         <h1>Compose Email(s)</h1>
 
+        <div class="form-group">
+            <label>Show Preview</label>
+            <input id="show-preview" name="showPreview" type="checkbox" checked=true value=1 />
+        </div>
+
 
         <div class="form-group">
             <label>Template:</label>

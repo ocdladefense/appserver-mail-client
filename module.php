@@ -3,6 +3,7 @@
 use Http\Http;
 use Http\HttpRequest;
 use Http\HttpHeaderCollection;
+
 use function Session\get_current_user;
 
 class MailModule extends Module {
@@ -46,13 +47,25 @@ class MailModule extends Module {
 
 		$moduleName = explode("-", $mailExtension)[0];
 
-		// Lookup the extension;
-		// For now let's code a specific algorithm.
-
 		$form = new Template("email-custom-fields");
 		$form->addPath(path_to_modules() . "/$moduleName/templates");
 
 		return $form->render();
+	}
+
+
+	public function getPreview($params){
+
+		$mailExtension = $params->template;
+		$mailExtensionParts = explode("-", $mailExtension);
+		$moduleName = $mailExtensionParts[0];
+		$messageType = $mailExtensionParts[1];
+
+		$messageClass = ucfirst($moduleName) . ucfirst($messageType) . "Message";
+
+		$message = new $messageClass();
+
+		return $message->getHtml($params);
 	}
 
 
@@ -66,6 +79,10 @@ class MailModule extends Module {
 		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
 
 		$params = $this->getRequest()->getBody();
+
+		if(!empty($params->showPreview)) return $this->getPreview($params);
+
+		var_dump($params);exit;
 
 		$content = $params->body;
 
