@@ -9,11 +9,15 @@
 @media only screen and (min-width: 1000px) {
 
     .email-container{
-        max-width: 60%;
-        padding: 2vw;
+        max-width: unset;
+        padding-top:5px;
     }
+
     input[type=date]{
         display: inline;
         max-width: 30%;
-    }        
+    }
+    textarea#email-body {
+        min-height: 500px;
+    }
 }

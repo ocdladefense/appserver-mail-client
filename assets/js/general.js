@@ -8,27 +8,21 @@ domReady(function() {
 
     let tnode = document.getElementById("template");
     tnode.addEventListener("change", updateForm);
-
-    let form = document.getElementById("compose");
-
-    console.log(form);
-    form.addEventListener("onsubmit", showOptionalPreview);
 });
 
 
-function showOptionalPreview(e){
 
-    console.log(e);
+function getCompositionCustomFields(emailType) {
 
-    let previewCheckbox = document.getElementById("show-preview");
+    return fetch("/mail/compose/custom-fields/"+emailType)
+    .then(function(resp) {
+        return resp.text();
+    });
+} 
 
-    console.log(previewCheckbox);
-}
+function getPreview(emailType) {
 
-
-function getCompositionCustomFields(moduleName) {
-
-    return fetch("/mail/compose/custom-fields/"+moduleName)
+    return fetch("/mail/compose/preview/"+emailType)
     .then(function(resp) {
         return resp.text();
     });
@@ -38,15 +32,20 @@ function getCompositionCustomFields(moduleName) {
 
 function updateForm(e) {
     let target = e.target;
-    
     let emailType = target.value; // "car";//moduleName || "car";
-
 
     let req = getCompositionCustomFields(emailType);
 
     req.then(function(html) {  
         let cfnode = document.getElementById("custom-fields");
         cfnode.innerHTML = html;
+    });
+
+    let req2 = getPreview(emailType);
+
+    req2.then(function(html) {  
+        let emailBodyNode = document.getElementById("email-body");
+        emailBodyNode.value = html;
     });
 }
 

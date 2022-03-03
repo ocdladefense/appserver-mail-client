@@ -28,7 +28,7 @@
             "callback": "getCustomMailFields",
             "content-type":"text/partial+html"
         },
-        "mail/car/preview": {
+        "mail/compose/preview/%s": {
             "callback": "getPreview",
             "content-type":"text/partial+html"
         }

@@ -36,10 +36,7 @@ class MailModule extends Module {
 	}
 
 
-/**
- * 
- * let fetch("/mail/compose/custom-fields/car").then((}))
- */
+
 
 	public function getCustomMailFields($mailExtension = "car") {
 
@@ -52,25 +49,6 @@ class MailModule extends Module {
 
 		return $form->render();
 	}
-
-
-	public function getPreview($params){
-
-		$mailExtension = $params->template;
-		$mailExtensionParts = explode("-", $mailExtension);
-		$moduleName = $mailExtensionParts[0];
-		$messageType = $mailExtensionParts[1];
-
-		$messageClass = ucfirst($moduleName) . ucfirst($messageType) . "Message";
-
-		$message = new $messageClass();
-
-		return $message->getHtml($params);
-	}
-
-
-
-
 
 
 	public function sendMail() {
@@ -86,13 +64,35 @@ class MailModule extends Module {
 
 		$content = $params->body;
 
-
-
 		$to = "jbernal.web.dev@gmail.com";// + trevro
 		$subject = "Books Online notifications";
 
 		return $this->doMail($to, $subject, $subject, $content);
 	}
+
+
+
+	public function getPreview($emailType){
+
+		if($emailType == "standard") return "";
+
+		$emailTypeParts = explode("-", $emailType);
+		$moduleName = $emailTypeParts[0];
+		$messageType = $emailTypeParts[1];
+
+		$messageClass = ucfirst($moduleName) . ucfirst($messageType) . "Message";
+
+		$message = new $messageClass();
+
+		return $message->getHtml($params);
+	}
+
+
+
+
+
+
+
 
 
 
