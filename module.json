@@ -3,7 +3,7 @@
 	"name": "mail", 
 	"description": "A mail client module.",
     "connectedApp":"default",
-	"files": ["CarNotificationMessage.php"],
+	"files": ["CarNotificationMessage.php", "Car.php"],
     "links":[{
         "href":"/mail",
         "label": "Send Mail",

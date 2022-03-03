@@ -31,7 +31,7 @@ class CarNotificationMessage extends MailMessage{
 			$query .= " AND court = '{$court}'";
 		}
 
-
+		$query = "SELECT * FROM car LIMIT 5";
 
 		// print $query;exit;
 		// ORDER BY year DESC, month DESC, day DESC";
