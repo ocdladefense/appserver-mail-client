@@ -52,7 +52,7 @@
 
             <div class="col-md-6">
 
-                <div id="preview-container" class="form-group email-body hidden">
+                <div id="preview-container" class="form-group scroll email-body preview hidden">
                 </div>
 
                 <div id="body-container" class="form-group">

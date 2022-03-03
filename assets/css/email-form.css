@@ -28,6 +28,12 @@
         margin-top:10px;
     }
 
+    .preview{
+        max-height: 400px;
+        overflow: scroll;
+        zoom: 100%;
+    }
+
     textarea#email-body, .editable {
         min-height: 400px;
     }

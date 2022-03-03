@@ -92,14 +92,10 @@ class MailModule extends Module {
 		$params->startDate = "2022-01-01";
 		$params->endDate = "2022-03-02";
 
-		$html = "<h3>Preview:</h3>";
-
-		$html .= $template->render(array(
+		return $template->render(array(
 			"content" => $message->getHtml($params),
 			"title" => $message->getTitle()
 		));
-
-		return $html;
 	}
 
 
