@@ -48,10 +48,13 @@ function updateForm(e) {
     let previewContainer = document.getElementById("preview-container");
     let bodyContainer = document.getElementById("body-container");
 
-    console.log(previewContainer, bodyContainer);
-
-    bodyContainer.classList.toggle("hidden");
-    previewContainer.classList.toggle("hidden");
+    if(emailType == "standard"){
+        bodyContainer.classList.remove("hidden");
+        previewContainer.classList.add("hidden");
+    }else{
+        bodyContainer.classList.add("hidden");
+        previewContainer.classList.remove("hidden");
+    }
 
     let req2 = getPreview(emailType);
     req2.then(function(html) {  
