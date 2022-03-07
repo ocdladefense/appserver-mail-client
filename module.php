@@ -58,21 +58,37 @@ class MailModule extends Module {
 
 		$params = $this->getRequest()->getBody();
 
-		if(!empty($params->showPreview)) return $this->getPreview($params);
+		if($params->template == "standard") {
 
-		var_dump($params);exit;
+			$content = $params->body;
 
-		$content = $params->body;
+		} else {
 
-		$to = "jbernal.web.dev@gmail.com";// + trevro
-		$subject = "Books Online notifications";
+			$emailTypeParts = explode("-", $params->template);
+			$moduleName = $emailTypeParts[0];
+			$messageType = $emailTypeParts[1];
 
-		return $this->doMail($to, $subject, $subject, $content);
+			$messageClass = ucfirst($moduleName) . ucfirst($messageType) . "Message";
+			$message = new $messageClass();
+	
+			$template = new Template("email");
+			$template->addPath(get_theme_path());
+	
+			$content = $template->render(array(
+				"content" => $message->getHtml($params),
+				"title" => $message->getTitle()
+			));
+
+		}
+
+		return $this->doMail($params->to, $params->from, $params->subject, $content);
 	}
 
 
 
 	public function getPreview($emailType){
+
+		// var_dump($_GET);exit;
 
 		if($emailType == "standard") return "";
 

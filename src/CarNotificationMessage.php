@@ -11,6 +11,9 @@ class CarNotificationMessage extends MailMessage{
     
 	public function getHtml($params) {
 
+		$startDate = new DateTime($params->startDate);
+		$endDate = new DateTime($params->endDate);
+
 		return $this->getRecentCarList($params->court, $startDate, $endDate);
 	}
 
@@ -31,13 +34,7 @@ class CarNotificationMessage extends MailMessage{
 			$query .= " AND court = '{$court}'";
 		}
 
-		$query = "SELECT * FROM car LIMIT 5";
-
-		// print $query;exit;
-		// ORDER BY year DESC, month DESC, day DESC";
 		$cars = select($query);
-		
-		// var_dump($cars);exit;
 
 		$list = new Template("email-list");
 		$list->addPath(path_to_modules() . "/car/templates");
