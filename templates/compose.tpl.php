@@ -12,27 +12,33 @@
     <h3>Compose mail</h3>
 
 
-    <form action="/mail/send" method="post">
-
-        <div class="form-group">
+    <form action="/mail/send" id="composer" method="post">
+      
+        <div class="form-item">
             <label>Template:</label>
-            <?php print Html\Select("template", $templates,"default"); ?>
+            <?php print Html\Select("template", array("default"=>"OCDLA Letterhead"),"default"); ?>
         </div>
 
-
-        <div class="form-group">
-            <label>To:</label>
-            <input required id="to" type="email" class="form-control" name="to" value="<?php print $defaultFrom; ?>" aria-describedby="emailHelp" placeholder="To..." />
+        <div class="form-item">
+            <label>Email Type:</label>
+            <?php print Html\Select("emailtype", $templates,"default"); ?>
         </div>
 
-        <div class="form-group">
+        <div class="form-item">
             <label>From:</label>
-            <input required type="email" class="form-control" name="from" aria-describedby="emailHelp" placeholder="From..." />
+            <input required type="email" name="from" aria-describedby="emailHelp" placeholder="From..." />
         </div>
+
+        <div class="form-item">
+            <label>To:</label>
+            <input required id="to" type="email" name="to" value="<?php print $defaultFrom; ?>" aria-describedby="emailHelp" placeholder="To..." />
+        </div>
+
+
         
-        <div class="form-group">
+        <div class="form-item">
             <label>Email Subject</label>
-            <input type="text" class="form-control" name="subject" value="" placeholder="Enter email subject line..." />
+            <input type="text" name="subject" value="" placeholder="Enter email subject line..." />
         </div>
 
         <div id="custom-fields">

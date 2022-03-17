@@ -4,48 +4,87 @@
  */
 
 
-domReady(function() {
-
-    let tnode = document.getElementById("template");
-    tnode.addEventListener("change", updateForm);
-});
 
 
+const mailer = (function() {
+    
 
-function getCustomFields(template) {
+    let composer,
 
-    return fetch("/mail/compose/custom-fields/"+template)
-    .then(function(resp) {
-        return resp.text();
-    });
-} 
+    template,
 
-function getPreview(emailType) {
+    emailtype,
 
-    return fetch("/mail/compose/preview/"+emailType)
-    .then(function(resp) {
-        return resp.text();
-    });
-} 
+    currentEmailType,
+
+    CUSTOM_FIELDS_URL = "/mail/compose/custom-fields",
+
+    PREVIEW_URL = "/mail/compose/preview";
 
 
 
-function updateForm(e) {
-    let target = e.target;
-    let template = target.value;
-    let body = document.getElementById("body");
-    let pnode = document.getElementById("preview");
-    let fnode = document.getElementById("custom-fields");
-    let fhtml = getCustomFields(template);
-    let phtml = getPreview(template);
+    function init() {
+        composer = document.getElementById("composer");
+        emailtype = document.getElementById("emailtype");
+        composer.addEventListener("change", update);
+        currentEmailType = emailtype.value;
+    }
+
+    function getCustomFields(data) {
+        let template = data.get("emailtype");
+
+        return fetch(CUSTOM_FIELDS_URL+"/"+template)
+        .then(function(resp) {
+            return resp.text();
+        });
+    } 
 
 
-    fhtml.then(function(html) {  
-        fnode.innerHTML = html;
-    });
 
-    phtml.then(function(html) {  
-        pnode.innerHTML = html;
-    });
-}
+
+    function getPreview(data) {
+
+
+        var template = data.get("emailtype");
+        
+
+
+        return fetch(PREVIEW_URL+"/"+template,
+        {
+            method: 'POST',
+            body: data
+        })
+        .then(function(resp) {
+            return resp.text();
+        });
+    }
+
+
+
+    function update(e) {
+
+        var form = e.currentTarget;
+        var data = new FormData(form);
+        let body = document.getElementById("body");
+        let pnode = document.getElementById("preview");
+        let fnode = document.getElementById("custom-fields");
+
+
+
+        if(currentEmailType != data.get("emailtype")) {
+            currentEmailType = data.get("emailtype");
+            getCustomFields(data).then(function(html) {  
+                fnode.innerHTML = html;
+            });
+        }
+
+        getPreview(data).then(function(html) {  
+            pnode.innerHTML = html;
+        });
+    }
+
+    return init;
+})();
+
+domReady(mailer);
 
