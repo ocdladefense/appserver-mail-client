@@ -4,10 +4,12 @@ use Http\Http;
 use Http\HttpRequest;
 use Http\HttpHeaderCollection;
 
-use function Session\get_current_user;
+
 
 class MailModule extends Module {
 
+
+	
     public function __construct() {
 
         parent::__construct();
@@ -17,19 +19,25 @@ class MailModule extends Module {
 
 	public function compose() {
 
-		$user = get_current_user();
-		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
+		$user = current_user();
+
+
+		$t = $this->getTemplates();
+		$t["default"] = "Choose a template";
+
+		// var_dump($templates);exit;
 
 
 		$today = new DateTime();
 		$pickerDate = $today->format("Y-m-d");
 		$emailDate = $today->format("M d, Y");
 
-		$form = new Template("email-form");
+		$form = new Template("compose");
 		$form->addPath(__DIR__ . "/templates");
 
 		$params = [
-			"defaultFrom" => get_current_user()->getEmail()
+			"defaultFrom" => $user->getEmail(),
+			"templates" => $t
 		];
 
 		return $form->render($params);
@@ -38,29 +46,125 @@ class MailModule extends Module {
 
 
 
-	public function getCustomMailFields($mailExtension = "car") {
+	public function getCustomMailFields($template) {
+		return "<input placeholder='foobar' />";
 
-		if($mailExtension == "standard") return "";
+		$tmp = explode("-", $template);
+		$module = $tmp[0];
+		$template = $tmp[1];
 
-		$moduleName = explode("-", $mailExtension)[0];
-
-		$form = new Template("email-custom-fields");
-		$form->addPath(path_to_modules() . "/$moduleName/templates");
+		$form = new Template($template);
+		$form->addPath(path_to_modules() . "/$module/templates");
 
 		return $form->render();
 	}
 
 
+	
+
+
+
+	public function getPreview($template) {
+		// $preview = "<h2>Hello World!</h2>";
+
+
+		if($template == "default") return "";
+
+		$tmp = explode("-", $template);
+		$module = array_shift($tmp);
+		$template = implode("-", $tmp);
+
+		
+
+		$class = $this->loadMailClass($module);
+
+		return $class->getPreview($template);
+	}
+
+
+
+
+
+
+
+
+
+	private function loadMailClass($name) {
+
+		
+		$module = $this->getModule($name);
+
+
+		$path = $module["path"] . "/src/Mail.php";
+		require $path;
+	
+
+	
+		$ns = ucwords($name);
+		$class = "\\{$ns}\\Mail";
+		
+		return new $class();
+	}
+
+
+
+
+    public function getTemplates() {
+
+		$modules = $this->query("mail",true);
+
+		// Paths to each module's respective Mail class.
+		$paths = array();
+
+		// Array of classes to instantiate.
+		$classes = array();
+
+		// Array of string templates.
+		$templates = array();
+
+		/*
+		foreach($modules as $module) {
+			$paths []= $module["path"] . "/src/Mail.php";
+		}
+
+		foreach($paths as $path) {
+			require $path;
+		}
+		*/
+
+		foreach($modules as $name => $module) {
+			$ns = ucwords($name);
+			$class = "\\{$ns}\\Mail";
+			$classes []= $class;
+		}
+
+		foreach($classes as $class) {
+			$instance = new $class();
+			$tlist = $instance->getTemplates();
+			$templates = array_merge($templates, $tlist);
+		}
+
+
+		return $templates;
+    }
+
+
+
+
+
+
+
 	public function sendMail() {
 
-		$user = get_current_user();
+		$user = current_user();
 		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
 
 		$params = $this->getRequest()->getBody();
 
 		if(!empty($params->showPreview)) return $this->getPreview($params);
 
-		var_dump($params);exit;
+		var_dump($params);
+		exit;
 
 		$content = $params->body;
 
@@ -70,62 +174,6 @@ class MailModule extends Module {
 		return $this->doMail($to, $subject, $subject, $content);
 	}
 
-
-
-	public function getPreview($emailType){
-
-		if($emailType == "standard") return "";
-
-		$emailTypeParts = explode("-", $emailType);
-		$moduleName = $emailTypeParts[0];
-		$messageType = $emailTypeParts[1];
-
-		$messageClass = ucfirst($moduleName) . ucfirst($messageType) . "Message";
-
-		$message = new $messageClass();
-
-		$template = new Template("email");
-		$template->addPath(get_theme_path());
-
-		$params = new stdClass();
-		$params->court = "Oregon Appellate Court";
-		$params->startDate = "2022-01-01";
-		$params->endDate = "2022-03-02";
-
-		$html = "<h3>Preview:</h3>";
-
-		$html .= $template->render(array(
-			"content" => $message->getHtml($params),
-			"title" => $message->getTitle()
-		));
-
-		return $html;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-    // Use composer.json;
-    // email: ["className1","className2"] for a list of 
-    // classes to instantiate that can implement getTemplates()
-    public function showTemplates() {
-
-        return array(
-            "templateName",
-            "CAR Notifications" => "/car/mail/create",
-            "CAR Notifications" => "/mail/car/notifications",
-            "BON Notification 1" => "/mail/bon/notification-1",
-            "BON Notification 2" => "/mail/bon/notification-2"
-        );
-    }
 
 
 	public function doMail($to, $subject, $title, $content, $headers = array()){

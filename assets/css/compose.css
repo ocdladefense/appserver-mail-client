@@ -1,34 +1,49 @@
-.email-container{
+.panel {
+    display:inline-block;
+    vertical-align: top;
+}
+
+.panel-left {
+    width:35%;
+}
+
+.panel-right {
+    width:63%;
+}
+
+
+
+.email-container {
     background-color: lightblue;
 }
-.date-group{
+.date-group {
     text-align:center;
     margin: 5% 0 5% 0;
 }
 
-.hidden{
+.hidden {
     display:none;
 }
+
+
 @media only screen and (min-width: 1000px) {
 
-    .email-container{
+    .email-container {
         max-width: unset;
         padding-top:5px;
     }
 
-    input[type=date]{
+    input[type="date"] {
         display: inline;
         max-width: 30%;
     }
 
-    .email-body{
-        background-color: white;
-        min-height: 400px;
+    .email-body {
         padding: 10px;
-        margin-top:10px;
     }
 
-    textarea#email-body, .editable {
-        min-height: 400px;
-    }
+}
+
+.form-control {
+    margin-bottom: 15px;
 }
