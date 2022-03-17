@@ -1,3 +1,9 @@
+@media screen and (min-width: 1024px) {
+    #stage-content {
+        width: auto;
+    }
+}
+
 label {
     display:block;
 }
@@ -12,11 +18,18 @@ label {
 }
 
 .panel-left {
-    width:35%;
+    width: 28%;
+    overflow-x: hidden;
+    /* padding-left: 15px; */ 
+    /* padding-right: 15px; */
+    border-right: 1px solid #ccc;
+    margin-right: 15px;
 }
 
 .panel-right {
-    width:63%;
+    width:65%;
+    max-height:100vh;
+    overflow: scroll;
 }
 
 
@@ -27,20 +40,82 @@ label {
 }
 
 
-@media only screen and (min-width: 1000px) {
 
 
-    input[type="date"] {
-        display: inline;
-        max-width: 37%;
-    }
 
-    .email-body {
-        padding: 10px;
-    }
 
+.form-group {
+    display:block;
 }
 
-.form-control {
-    margin-bottom: 15px;
+.form-item {
+    display:block;
 }
+
+.form-item label {
+    display:block;
+    text-transform: capitalize;
+}
+
+
+.page-title {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.form-item input,
+.form-item select,
+.form-item button {
+    min-height: 30px;
+    vertical-align: middle;
+    padding: 11px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    width:100%;
+}
+
+.form-item input[type="checkbox"] {
+    width: auto;
+}
+
+
+@media only screen and (min-width:800px) {
+
+    .form-group .form-item {
+        display: inline-block;
+    }
+
+
+    .form-item input,
+    .form-item select,
+    .form-item button {
+        width:100%;
+    }
+}
+
+.form-item textarea {
+    padding:11px;
+    overflow:scroll;
+    max-width:100%;
+}
+
+.form-item button,
+.form-item input[type="submit"],
+.form-item input[type="reset"] {
+    padding-left:11px;
+    padding-right:11px;
+}
+
+label {
+    text-transform:capitalize;
+    font-size: smaller;
+    font-weight: bold;
+    color: #999;
+    display:block;
+}
+
+.form-item-link label {
+    display:block;
+}
+
+

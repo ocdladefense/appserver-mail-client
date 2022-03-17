@@ -16,21 +16,33 @@
             "callback":"compose",
             "content-type":"text/html",
             "authorization":"webserver",
-            "access": "is_authenticated"
+            "access": "is_admin"
+        },
+        "mail/compose":{
+            "callback":"compose",
+            "content-type":"text/html",
+            "authorization":"webserver",
+            "access": "is_admin"
+        },
+        "mail/compose/fields/%s": {
+            "callback": "getFields",
+            "content-type":"text/partial+html"
+        },
+        "mail/preview/%s": {
+            "callback": "previewMail",
+            "content-type":"text/partial+html"
+        },
+        "mail/test/%s":{
+            "callback": "testMail",
+            "content-type":"text/html",
+            "authorization":"webserver",
+            "access": "is_admin"
         },
         "mail/send":{
             "callback": "sendMail",
             "content-type":"text/html",
             "authorization":"webserver",
-            "access": "is_authenticated"
-        },
-        "mail/compose/custom-fields/%s": {
-            "callback": "getCustomMailFields",
-            "content-type":"text/partial+html"
-        },
-        "mail/compose/preview/%s": {
-            "callback": "getPreview",
-            "content-type":"text/partial+html"
+            "access": "is_admin"
         }
     }
 }

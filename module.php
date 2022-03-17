@@ -22,15 +22,16 @@ class MailModule extends Module {
 		$user = current_user();
 
 
-		$t = $this->getTemplates();
+		
 		$t["default"] = "Choose a template";
 
-		// var_dump($templates);exit;
-
+		foreach($this->getTemplates() as $key => $name) {
+			$t[$key] = $name;
+		}
 
 		$today = new DateTime();
 		$pickerDate = $today->format("Y-m-d");
-		$emailDate = $today->format("M d, Y");
+
 
 		$form = new Template("compose");
 		$form->addPath(__DIR__ . "/templates");
@@ -46,7 +47,7 @@ class MailModule extends Module {
 
 
 
-	public function getCustomMailFields($template) {
+	public function getFields($template) {
 	
 		if($template == "default") return "";
 
@@ -68,7 +69,7 @@ class MailModule extends Module {
 
 
 
-	public function getPreview($template) {
+	public function previewMail($template) {
 		// $preview = "<h2>Hello World!</h2>";
 
 
@@ -93,6 +94,84 @@ class MailModule extends Module {
 		));
 	}
 
+
+
+
+
+
+
+
+
+
+	public function sendMail() {
+
+		$user = current_user();
+		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
+
+
+		$to = "jbernal.web.dev@gmail.com";
+		$subject = "CAR notifications";
+
+		if($template == "default") return "";
+
+		$tmp = explode("-", $template);
+		$module = array_shift($tmp);
+		$template = implode("-", $tmp);
+
+	
+		$class = $this->loadMailClass($module);
+
+		$content = $class->getPreview($template);
+
+		return $this->createMailMessage($to, $subject, "Criminal Appellate Review", $content);
+	}
+
+
+
+
+
+
+	public function testMail($template) {
+
+		$to = "jbernal.web.dev@gmail.com";
+		$subject = "CAR notifications";
+
+		if($template == "default") return "";
+
+		$tmp = explode("-", $template);
+		$module = array_shift($tmp);
+		$template = implode("-", $tmp);
+
+	
+		$class = $this->loadMailClass($module);
+
+		$content = $class->getPreview($template);
+
+		return $this->createMailMessage($to, $subject, "SAMPLE EMAIL", $content);
+	}
+
+
+
+	public function createMailMessage($to, $subject, $title, $content, $headers = array()){
+
+		$headers = [
+			"From" 		   => "notifications@ocdla.org",
+			"Content-Type" => "text/html",
+            "Bcc"           => "jbernal.web.dev@gmail.com"
+		];
+
+		$headers = HttpHeaderCollection::fromArray($headers);
+
+
+
+		$message = new MailMessage($to);
+		$message->setSubject($subject);
+		$message->setBody($content);
+		$message->setHeaders($headers);
+		$message->setTitle($title);
+
+		return $message;
+	}
 
 
 
@@ -157,79 +236,12 @@ class MailModule extends Module {
 
 
 
-
-
-
-
-	public function sendMail() {
-
-		$user = current_user();
-		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
-
-		$params = $this->getRequest()->getBody();
-
-		if(!empty($params->showPreview)) return $this->getPreview($params);
-
-		var_dump($params);
-		exit;
-
-		$content = $params->body;
-
-		$to = "jbernal.web.dev@gmail.com";// + trevro
-		$subject = "Books Online notifications";
-
-		return $this->doMail($to, $subject, $subject, $content);
-	}
-
-
-
-	public function doMail($to, $subject, $title, $content, $headers = array()){
-
-		$headers = [
-			"From" 		   => "notifications@ocdla.org",
-			"Content-Type" => "text/html",
-            "Bcc"           => "jbernal.web.dev@gmail.com"
+	/*
+			$params = [
+			"defaultEmail"		=> current_user()->getEmail(),
+			"defaultSubject"	=> "Appellate Review - COA, $emailDate",
+			"defaultPickerDate" => $pickerDate
 		];
-
-		$headers = HttpHeaderCollection::fromArray($headers);
-
-
-
-		$message = new MailMessage($to);
-		$message->setSubject($subject);
-		$message->setBody($content);
-		$message->setHeaders($headers);
-		$message->setTitle($title);
-
-		return $message;
-	}
-
-
-
-	public function testMail() {
-
-
-		$to = "redderx@yahoo.com";
-		$subject = "Books Online notifications";
-
-
-		$range = new DateTime("2022-1-10");
-		$end = new DateTime();
-		$content = "My sample content.";
-		
-
-		return $this->doMail($to, $subject, "SAMPLE EMAIL", $content);
-	}
-
-
-	public function getScripts() {
-
-		
-	}
-
-	public function getStyles() {
-
-
-	}
+		*/
 
 }

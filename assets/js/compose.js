@@ -11,15 +11,23 @@ const mailer = (function() {
 
     let composer,
 
+    testButton,
+
+    sendButton,
+
     template,
 
     emailtype,
 
     currentEmailType,
 
-    CUSTOM_FIELDS_URL = "/mail/compose/custom-fields",
+    CUSTOM_FIELDS_URL = "/mail/compose/fields",
 
-    PREVIEW_URL = "/mail/compose/preview";
+    PREVIEW_URL = "/mail/preview",
+
+    TEST_URL = "/mail/test",
+
+    SEND_URL = "/mail/send";
 
 
 
@@ -27,8 +35,13 @@ const mailer = (function() {
         composer = document.getElementById("composer");
         emailtype = document.getElementById("emailtype");
         composer.addEventListener("change", update);
+        // composer.addEventListener("submit", update);
+        testButton = document.getElementById("test-mail");
         currentEmailType = emailtype.value;
+        testButton.addEventListener("click", testMail);
     }
+
+
 
     function getCustomFields(data) {
         let template = data.get("emailtype");
@@ -43,12 +56,48 @@ const mailer = (function() {
 
 
     function getPreview(data) {
+        var template = data.get("emailtype");
+        
+        return fetch(PREVIEW_URL+"/"+template,
+        {
+            method: 'POST',
+            body: data
+        })
+        .then(function(resp) {
+            return resp.text();
+        });
+    }
 
+
+    function testMail(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let composer = document.getElementById("composer");
+        let data = new FormData(composer);
 
         var template = data.get("emailtype");
         
+        let sent = fetch(TEST_URL+"/"+template,
+        {
+            method: 'POST',
+            body: data
+        })
+        .then(function(resp) {
+            return resp.text();
+        });
+
+        sent.then(function(status){
+            console.log(status);
+            alert("A test mesage for "+template+" was sent to your account");
+        });
+    }
 
 
+
+    function sendMail(data) {
+        var template = data.get("emailtype");
+        
         return fetch(PREVIEW_URL+"/"+template,
         {
             method: 'POST',
@@ -62,6 +111,8 @@ const mailer = (function() {
 
 
     function update(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
         var form = e.currentTarget;
         var data = new FormData(form);
@@ -78,6 +129,7 @@ const mailer = (function() {
             });
         }
 
+        
         getPreview(data).then(function(html) {  
             pnode.innerHTML = html;
         });

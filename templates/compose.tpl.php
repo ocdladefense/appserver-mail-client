@@ -12,25 +12,25 @@
     <h3>Compose mail</h3>
 
 
-    <form action="/mail/send" id="composer" method="post">
+    <form action="/mail/test" id="composer" method="post">
       
         <div class="form-item">
-            <label>Template:</label>
+            <label>Template</label>
             <?php print Html\Select("template", array("default"=>"OCDLA Letterhead"),"default"); ?>
         </div>
 
         <div class="form-item">
-            <label>Email Type:</label>
+            <label>Email Type</label>
             <?php print Html\Select("emailtype", $templates,"default"); ?>
         </div>
 
         <div class="form-item">
-            <label>From:</label>
+            <label>From</label>
             <input required type="email" name="from" aria-describedby="emailHelp" placeholder="From..." />
         </div>
 
         <div class="form-item">
-            <label>To:</label>
+            <label>To</label>
             <input required id="to" type="email" name="to" value="<?php print $defaultFrom; ?>" aria-describedby="emailHelp" placeholder="To..." />
         </div>
 
@@ -45,8 +45,13 @@
 
         </div>
 
+        <div class="form-item">
+            <button type="submit" id="send-mail" name="submit" disabled class="btn btn-primary" value="Send Mail">Send Mail</button>
+        </div>
 
-        <button type="submit" disabled class="btn btn-primary">Send Mail</button>
+        <div class="form-item">
+            <button type="submit" id="test-mail" name="test" class="btn btn-primary" value="Test">Test Mail</button>
+        </div>
     </form>
 
 </div>
