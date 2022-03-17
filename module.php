@@ -83,7 +83,7 @@ class MailModule extends Module {
 
 		$class = $this->loadMailClass($module);
 
-		$content = $class->getPreview($template);
+		list($subject, $title, $content) = $class->getPreview($template);
 
 
 		$template = new Template("email");
@@ -133,8 +133,8 @@ class MailModule extends Module {
 
 	public function testMail($template) {
 
-		$to = "jbernal.web.dev@gmail.com";
-		$subject = "CAR notifications";
+		$user = current_user();
+		$to = $user->getEmail();
 
 		if($template == "default") return "";
 
@@ -145,9 +145,9 @@ class MailModule extends Module {
 	
 		$class = $this->loadMailClass($module);
 
-		$content = $class->getPreview($template);
+		list($subject, $title, $content) = $class->getPreview($template);
 
-		return $this->createMailMessage($to, $subject, "SAMPLE EMAIL", $content);
+		return $this->createMailMessage($to, $subject, $title, $content);
 	}
 
 
@@ -236,12 +236,6 @@ class MailModule extends Module {
 
 
 
-	/*
-			$params = [
-			"defaultEmail"		=> current_user()->getEmail(),
-			"defaultSubject"	=> "Appellate Review - COA, $emailDate",
-			"defaultPickerDate" => $pickerDate
-		];
-		*/
+
 
 }
