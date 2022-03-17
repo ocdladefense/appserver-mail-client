@@ -5,10 +5,12 @@
 
 
 
-<h3>Compose Email(s)</h3>
+
 
 
 <div class="panel panel-left">
+    <h3>Compose mail</h3>
+
 
     <form action="/mail/send" method="post">
 
@@ -38,12 +40,14 @@
         </div>
 
 
-        <button type="submit" class="btn btn-primary">Send Mail</button>
+        <button type="submit" disabled class="btn btn-primary">Send Mail</button>
     </form>
 
 </div>
 
 <div class="panel panel-right">
+    <h3>Preview</h3>
+
     <div id="preview" class="">
 
     </div>

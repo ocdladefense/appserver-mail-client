@@ -47,16 +47,20 @@ class MailModule extends Module {
 
 
 	public function getCustomMailFields($template) {
-		return "<input placeholder='foobar' />";
+	
+		if($template == "default") return "";
 
 		$tmp = explode("-", $template);
-		$module = $tmp[0];
-		$template = $tmp[1];
+		$module = array_shift($tmp);
+		$template = implode("-", $tmp);
 
-		$form = new Template($template);
-		$form->addPath(path_to_modules() . "/$module/templates");
+		
 
-		return $form->render();
+		$class = $this->loadMailClass($module);
+
+		$content = $class->getCustomFields($template);
+
+		return $content;
 	}
 
 
@@ -78,7 +82,15 @@ class MailModule extends Module {
 
 		$class = $this->loadMailClass($module);
 
-		return $class->getPreview($template);
+		$content = $class->getPreview($template);
+
+
+		$template = new Template("email");
+		$template->addPath(get_theme_path());
+		return $template->render(array(
+			"content" => $content,
+			"title" => "Criminal Appellate Review"
+		));
 	}
 
 
@@ -92,13 +104,8 @@ class MailModule extends Module {
 	private function loadMailClass($name) {
 
 		
-		$module = $this->getModule($name);
-
-
-		$path = $module["path"] . "/src/Mail.php";
-		require $path;
-	
-
+		// $module = $this->getModule($name);
+		self::loadObject($name);
 	
 		$ns = ucwords($name);
 		$class = "\\{$ns}\\Mail";
