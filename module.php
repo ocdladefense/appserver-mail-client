@@ -90,7 +90,7 @@ class MailModule extends Module {
 		$template->addPath(get_theme_path());
 		return $template->render(array(
 			"content" => $content,
-			"title" => "Criminal Appellate Review"
+			"title" => $title
 		));
 	}
 
@@ -121,9 +121,9 @@ class MailModule extends Module {
 	
 		$class = $this->loadMailClass($module);
 
-		$content = $class->getPreview($template);
+		list($subject, $title, $content) = $class->getPreview($template);
 
-		return $this->createMailMessage($to, $subject, "Criminal Appellate Review", $content);
+		return $this->createMailMessage($to, $subject, $title, $content);
 	}
 
 

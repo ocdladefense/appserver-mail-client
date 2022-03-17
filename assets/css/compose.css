@@ -1,3 +1,11 @@
+h3 {
+    margin-top:23px;
+}
+
+h2 {
+    margin-top:25px;
+}
+
 @media screen and (min-width: 1024px) {
     #stage-content {
         width: auto;
