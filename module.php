@@ -17,6 +17,12 @@ class MailModule extends Module {
 
 
 
+
+	/**
+	 * @method compose
+	 * 
+	 * Show an email composition form to the user.  
+	 */
 	public function compose() {
 
 		$user = current_user();
@@ -46,7 +52,13 @@ class MailModule extends Module {
 
 
 
-
+	/**
+	 * @method getFields
+	 * 
+	 * Customize the mail form using any additional fields specified by the 
+	 * implementing module.  These are normally stored in the
+	 * custom-fields template file for each module.
+	 */
 	public function getFields($template) {
 	
 		if($template == "default") return "";
@@ -96,59 +108,74 @@ class MailModule extends Module {
 
 
 
-
-
-
-
-
-
-
-	public function sendMail() {
-
-		$user = current_user();
-		if(!$user->isAdmin()) throw new \Exception("You don't have access.");
-
-
-		$to = "jbernal.web.dev@gmail.com";
-		$subject = "CAR notifications";
-
-		if($template == "default") return "";
-
-		$tmp = explode("-", $template);
-		$module = array_shift($tmp);
-		$template = implode("-", $tmp);
-
 	
-		$class = $this->loadMailClass($module);
-
-		list($subject, $title, $content) = $class->getPreview($template);
-
-		return $this->createMailMessage($to, $subject, $title, $content);
-	}
 
 
 
 
 
-
-	public function testMail($template) {
+	public function testMail($p1) {
 
 		$user = current_user();
 		$to = $user->getEmail();
 
-		if($template == "default") return "";
+		if($p1 == "default") return "";
+		
+		list($module,$template) = $this->parseTemplate($p1);
+
+		$class = $this->loadMailClass($module);
+
+		$list = $class->getMessages();
+
+
+		foreach($list as $message) {
+			$message->setTo($to);
+		}
+
+
+		return $list;
+	}
+
+
+
+
+
+	public function sendMail($p1) {
+
+		$user = current_user();
+		$cc = $user->getEmail();
+
+		if($p1 == "default") return "";
+		
+		list($module,$template) = $this->parseTemplate($p1);
+
+		$class = $this->loadMailClass($module);
+
+		return $class->getMessages();
+	}
+
+
+
+
+
+	/**
+	 * Get MailMessage objects by delegating processing
+	 * to the underlying Mail implementation.
+	 */
+	public function parseTemplate($template) {
+
+		$req = $this->getRequest();
+		$body = $req->getBody();
+
 
 		$tmp = explode("-", $template);
 		$module = array_shift($tmp);
 		$template = implode("-", $tmp);
 
 	
-		$class = $this->loadMailClass($module);
-
-		list($subject, $title, $content) = $class->getPreview($template);
-
-		return $this->createMailMessage($to, $subject, $title, $content);
+		return array($module,$template);
 	}
+
 
 
 
@@ -195,6 +222,12 @@ class MailModule extends Module {
 
 
 
+	/**
+	 * @method getTemplates
+	 * 
+	 * Build a list of all modules implementing mail functionality.
+	 * Also build a list of all of their respective templates for display in the drop-down.
+	 */
     public function getTemplates() {
 
 		$modules = $this->query("mail",true);
@@ -208,26 +241,23 @@ class MailModule extends Module {
 		// Array of string templates.
 		$templates = array();
 
-		/*
-		foreach($modules as $module) {
-			$paths []= $module["path"] . "/src/Mail.php";
-		}
-
-		foreach($paths as $path) {
-			require $path;
-		}
-		*/
 
 		foreach($modules as $name => $module) {
 			$ns = ucwords($name);
 			$class = "\\{$ns}\\Mail";
-			$classes []= $class;
+			$classes[$name]= $class;
 		}
 
-		foreach($classes as $class) {
+		foreach($classes as $module => $class) {
 			$instance = new $class();
 			$tlist = $instance->getTemplates();
-			$templates = array_merge($templates, $tlist);
+
+			foreach($tlist as $tpl => $meta) {
+				$fqn = $module . "-" .$tpl;
+				$templates[$fqn] = $meta["name"];
+			}
+
+			
 		}
 
 

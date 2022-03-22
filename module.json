@@ -42,7 +42,7 @@
             "callback": "sendMail",
             "content-type":"text/html",
             "authorization":"webserver",
-            "access": "is_admin"
+            "access": false
         }
     }
 }
