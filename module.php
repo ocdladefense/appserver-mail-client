@@ -211,7 +211,7 @@ class MailModule extends Module {
 
 		
 		// $module = $this->getModule($name);
-		self::loadObject($name);
+		self::loadInstance($name);
 	
 		$ns = ucwords($name);
 		$class = "\\{$ns}\\Mail";
