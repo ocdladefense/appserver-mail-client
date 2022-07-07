@@ -6,10 +6,7 @@
 	"files": [],
     "links":[{
         "href":"/mail",
-        "label": "Send Mail",
-        "isSublink": true,
-        "adminLink": true,
-        "parentLinkId":"car"
+        "label": "Send Mail"
     }],
 	"routes": {
         "mail":{
@@ -38,7 +35,7 @@
             "authorization":"webserver",
             "access": "is_admin"
         },
-        "mail/send":{
+        "mail/send/%s":{
             "callback": "sendMail",
             "content-type":"text/html",
             "authorization":"webserver",
