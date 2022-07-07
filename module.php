@@ -78,32 +78,56 @@ class MailModule extends Module {
 
 
 	
-
-
-
-	public function previewMail($template) {
-		// $preview = "<h2>Hello World!</h2>";
-
-
-		if($template == "default") return "";
-
-		$tmp = explode("-", $template);
-		$module = array_shift($tmp);
-		$template = implode("-", $tmp);
-
-		
+	public function loadMailMessages($module, $template, $params) {
 
 		$class = $this->loadMailClass($module);
 
-		list($subject, $title, $content) = $class->getPreview($template);
+
+		$subjects = method_exists($class, "getSubjects") ? $class->getSubjects($params) : array($class->getSubject($params));
+
+		$bodies = method_exists($class, "getHtmlBodies") ? $class->getHtmlBodies($template, $params) : array($class->getHtmlBody($params));
+
+		$titles = method_exists($class, "getTitles") ? $class->getTitles($params) : array($class->getTitle($params));
+
+		
+
+		$emails = $emails ?? "jbernal.web.dev@gmail.com";
+
+		$list = new \MailMessageList();
+		// $list->add($message);
+
+		$generator = function($body, $index) use($emails,$subjects,$titles,$list) {
+			$subject = $subjects[$index];
+			$title = $title[$index];
+			$message = self::createMailMessage($emails, $subject, $title, $body);
+			$list->add($message);
+		};
+
+		array_walk($bodies, $generator);
+
+		return $list;
+	}
 
 
-		$template = new Template("email");
-		$template->addPath(get_theme_path());
-		return $template->render(array(
-			"content" => $content,
-			"title" => $title
-		));
+	public function previewMail($tpl) {
+
+		$req = $this->getRequest();
+		$params = $req->getBody();
+
+
+		$user = current_user();
+		$emails = $user->getEmail() ?? "jbernal.web.dev@gmail.com";
+
+		if($template == "default") return "";
+
+		list($module,$template) = $this->parseTemplate($tpl);
+		
+
+		$list = $this->loadMailMessages($module,$template,$params);
+
+		// var_dump($list);
+		return $list->getFirst()->getBody();
+		// return $messages[0];
 	}
 
 
@@ -114,44 +138,105 @@ class MailModule extends Module {
 
 
 
-	public function testMail($p1) {
+	public function testMail($tpl) {
+
+		$req = $this->getRequest();
+		$params = $req->getBody();
+
 
 		$user = current_user();
-		$to = $user->getEmail();
+		$emails = $user->getEmail() ?? "jbernal.web.dev@gmail.com";
 
-		if($p1 == "default") return "";
+		if($template == "default") return "";
+
+		list($module,$template) = $this->parseTemplate($tpl);
 		
-		list($module,$template) = $this->parseTemplate($p1);
 
-		$class = $this->loadMailClass($module);
+		$list = $this->loadMailMessages($module,$template,$params);
 
-		$list = $class->getMessages();
-
+		/*
+		        if(get_class($message) == "MailMessage") {
+            $list = new MailMessageList();
+            $list->add($message);
+        } else {
+            $list = $message;
+        }
+		*/
 
 		foreach($list as $message) {
-			$message->setTo($to);
+			$message->setTo($emails);
 		}
 
-
-		return $list;
+		$results = MailClient::sendMail($list);
+		
+		return $results;
 	}
 
 
 
 
 
-	public function sendMail($p1) {
+	public function sendMail($tpl) {
 
 		$user = current_user();
 		$cc = $user->getEmail();
 
-		if($p1 == "default") return "";
+		if($tpl == "default") return "";
 		
-		list($module,$template) = $this->parseTemplate($p1);
+		list($module,$template) = $this->parseTemplate($tpl);
 
-		$class = $this->loadMailClass($module);
+		$list = $this->loadMailMessages($module,$template,$params);
 
-		return $class->getMessages();
+		foreach($list as $message) {
+			$message->setTo($emails);
+		}
+
+		$results = false; // MailClient::sendMail($list);
+		
+		return $results;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public function createMailMessage($to, $subject, $title, $content, $headers = array()){
+		$template = new Template("email");
+		$template->addPath(get_theme_path());
+		$body = $template->render(array(
+			"content" 	=> $content,
+			"title" 	=> $title
+		));
+
+
+
+		$headers = [
+			"From" 		   	=> "notifications@ocdla.org",
+			"Content-Type" 	=> "text/html",
+            "Bcc"           => "jbernal.web.dev@gmail.com"
+		];
+
+		$headers = HttpHeaderCollection::fromArray($headers);
+
+
+
+		$message = new MailMessage($to);
+		$message->setSubject($subject);
+		$message->setBody($body);
+		$message->setHeaders($headers);
+		$message->setTitle($title);
+
+		return $message;
 	}
 
 
@@ -161,6 +246,10 @@ class MailModule extends Module {
 	/**
 	 * Get MailMessage objects by delegating processing
 	 * to the underlying Mail implementation.
+	 * 
+	 * A mail template identifier should be a dash-separated string,
+	 * prefixed with the name of the module that provides the template.  For example, 
+	 * bon
 	 */
 	public function parseTemplate($template) {
 
@@ -178,35 +267,6 @@ class MailModule extends Module {
 
 
 
-
-	public function createMailMessage($to, $subject, $title, $content, $headers = array()){
-
-		$headers = [
-			"From" 		   => "notifications@ocdla.org",
-			"Content-Type" => "text/html",
-            "Bcc"           => "jbernal.web.dev@gmail.com"
-		];
-
-		$headers = HttpHeaderCollection::fromArray($headers);
-
-
-
-		$message = new MailMessage($to);
-		$message->setSubject($subject);
-		$message->setBody($content);
-		$message->setHeaders($headers);
-		$message->setTitle($title);
-
-		return $message;
-	}
-
-
-
-
-
-
-
-
 	private function loadMailClass($name) {
 
 		
@@ -218,6 +278,9 @@ class MailModule extends Module {
 		
 		return new $class();
 	}
+
+
+	
 
 
 
