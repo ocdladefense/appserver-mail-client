@@ -31,13 +31,13 @@
         },
         "mail/test/%s":{
             "callback": "testMail",
-            "content-type":"text/html",
+            "content-type":"application/json",
             "authorization":"webserver",
             "access": "is_admin"
         },
         "mail/send/%s":{
             "callback": "sendMail",
-            "content-type":"text/html",
+            "content-type":"application/json",
             "authorization":"webserver",
             "access": false
         }
