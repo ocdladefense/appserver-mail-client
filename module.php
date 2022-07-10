@@ -9,6 +9,8 @@ use Http\HttpHeaderCollection;
 class MailModule extends Module {
 
 
+	const DEFAULT_EMAIL = "jbernal.web.dev@gmail.com";
+
 	
     public function __construct() {
 
@@ -89,9 +91,9 @@ class MailModule extends Module {
 
 		$titles = method_exists($class, "getTitles") ? $class->getTitles($params) : array($class->getTitle($params));
 
-		
+		$emails = method_exists($class, "getEmails") ? $class->getEmails($params) : array();
 
-		$emails = $emails ?? "jbernal.web.dev@gmail.com";
+
 
 		$list = new \MailMessageList();
 		// $list->add($message);
@@ -99,6 +101,7 @@ class MailModule extends Module {
 		$generator = function($body, $index) use($emails,$subjects,$titles,$list) {
 			$subject = $subjects[$index];
 			$title = $title[$index];
+			$email = $emails[$index] ?? self::DEFAULT_EMAIL;
 			$message = self::createMailMessage($emails, $subject, $title, $body);
 			$list->add($message);
 		};
@@ -116,7 +119,7 @@ class MailModule extends Module {
 
 
 		$user = current_user();
-		$emails = $user->getEmail() ?? "jbernal.web.dev@gmail.com";
+		// $emails = $user->getEmail() ?? "jbernal.web.dev@gmail.com";
 
 		if($template == "default") return "";
 
@@ -145,7 +148,7 @@ class MailModule extends Module {
 
 
 		$user = current_user();
-		$emails = $user->getEmail() ?? "jbernal.web.dev@gmail.com";
+		$email = $user->getEmail() ?? "jbernal.web.dev@gmail.com";
 
 		if($template == "default") return "";
 
@@ -164,7 +167,7 @@ class MailModule extends Module {
 		*/
 
 		foreach($list as $message) {
-			$message->setTo($emails);
+			$message->setTo($email);
 		}
 
 		$results = MailClient::sendMail($list);
