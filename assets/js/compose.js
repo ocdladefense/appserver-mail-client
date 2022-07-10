@@ -84,11 +84,11 @@ const mailer = (function() {
             body: data
         })
         .then(function(resp) {
-            return resp.text();
+            return resp.json();
         });
 
-        sent.then(function(status){
-            console.log(status);
+        sent.then(function(statuses){
+            console.log(statuses);
             alert("A test mesage for "+template+" was sent to your account");
         });
     }
