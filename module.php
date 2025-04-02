@@ -170,7 +170,8 @@ class MailModule extends Module {
 			$message->setTo($email);
 		}
 
-		$results = MailClient::sendMail($list);
+		// $results = MailClient::sendMail($list);
+		$results = MailClientSes::sendMail($list);
 		
 		return $results;
 	}
